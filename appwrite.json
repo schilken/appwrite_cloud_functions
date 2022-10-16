@@ -1,0 +1,21 @@
+{
+    "projectId": "events_explorer",
+    "projectName": "events_explorer",
+    "functions": [
+        {
+            "$id": "eventListener",
+            "name": "eventListener",
+            "runtime": "dart-2.17",
+            "path": "functions/eventListener",
+            "entrypoint": "lib/main.dart",
+            "ignore": [
+                ".packages",
+                ".dart_tool"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        }
+    ]
+}
