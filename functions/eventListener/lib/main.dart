@@ -1,4 +1,5 @@
 import 'package:dart_appwrite/dart_appwrite.dart';
+import 'dart:convert' as convert;
 
 /*
   'req' variable has:
@@ -18,16 +19,9 @@ Future<void> start(final req, final res) async {
 
   Client client = Client();
 
-  // You can remove services you don't use
-  Account account = Account(client);
-  Avatars avatars = Avatars(client);
   Databases database = Databases(client);
-  Functions functions = Functions(client);
-  Health health = Health(client);
-  Locale locale = Locale(client);
-  Storage storage = Storage(client);
-  Teams teams = Teams(client);
-  Users users = Users(client);
+  bool resultCode = true;
+  String message = 'OK';
 
   if (req.variables['APPWRITE_FUNCTION_ENDPOINT'] == null ||
       req.variables['APPWRITE_FUNCTION_API_KEY'] == null) {
@@ -39,9 +33,27 @@ Future<void> start(final req, final res) async {
         .setProject(req.variables['APPWRITE_FUNCTION_PROJECT_ID'])
         .setKey(req.variables['APPWRITE_FUNCTION_API_KEY'])
         .setSelfSigned(status: true);
+    final data = {
+      'type': req.variables['APPWRITE_FUNCTION_EVENT'],
+      'timestamp': DateTime.now().toIso8601String(),
+      'data':
+          convert.json.encode(req.variables['APPWRITE_FUNCTION_EVENT_DATA']),
+    };
+    try {
+      await database.createDocument(
+          databaseId: '634aefe8638b2f1f5404',
+          collectionId: 'event_log',
+          documentId: 'unique()',
+          data: data);
+    } on Exception catch (e) {
+      resultCode = false;
+      message = e.toString();
+      print(e.toString());
+    }
   }
 
   res.json({
-    'areDevelopersAwesome': true,
+    'success': resultCode,
+    'message': message,
   });
 }
