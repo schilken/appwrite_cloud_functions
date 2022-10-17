@@ -1,16 +1,8 @@
 # appwrite_cloud_functions
 
-A new Flutter project.
+This a simple Flutter project to explore the cloud functions of an Appwrite backend
 
-## Getting Started
+It demonstrates
+- how to create, deploy, debug and test a cloud function directly in VScode
+- how to call a cloud function from a Flutter App
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
