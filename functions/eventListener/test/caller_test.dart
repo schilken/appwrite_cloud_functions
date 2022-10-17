@@ -1,6 +1,9 @@
 import 'dart:convert' as convert;
 
 import 'package:appwrite_function/main.dart';
+import 'package:dart_appwrite/dart_appwrite.dart';
+import 'package:dart_appwrite/models.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 const appwriteUrl = 'http://192.168.2.23/v1';
@@ -32,6 +35,18 @@ class Response {
   }
 }
 
+class MockClient extends Mock implements Client {
+  @override
+  noSuchMethod(Invocation invocation) {
+    // print('MockClient: : ${invocation.memberName}');
+    // print('  namedArguments: ${invocation.namedArguments}');
+    // print('  positionalArguments: ${invocation.positionalArguments}');
+    return this;
+  }
+}
+
+class MockDatabases extends Mock implements Databases {}
+
 void main() {
   test('call remote function with users.create event', () async {
     final req = Request();
@@ -46,4 +61,40 @@ void main() {
     expect(res.statusCode, 200);
     expect(res.responseAsString, '{"success":true,"message":"OK"}');
   });
+
+  test('mocked services: call remote function with users.create event',
+      () async {
+    final req = Request();
+    req.variables['APPWRITE_FUNCTION_EVENT'] =
+        'users.634d2b1eeb3cc427de27.create';
+    req.variables['APPWRITE_FUNCTION_EVENT_DATA'] = convert.json.encode({
+      'name': 'user1',
+      'email': 'user1@example.com',
+    });
+    final res = Response();
+    mockClient = MockClient();
+    mockDatabases = MockDatabases();
+    when(
+      () => mockDatabases!.createDocument(
+        databaseId: any(named: 'databaseId'),
+        collectionId: any(named: 'collectionId'),
+        documentId: any(named: 'documentId'),
+        data: any(named: 'data'),
+      ),
+    ).thenAnswer((invocation) async => Document(
+          $collectionId: '',
+          $createdAt: '',
+          $databaseId: '',
+          $id: '424242',
+          $permissions: [],
+          $updatedAt: '',
+          data: {},
+        ));
+    await start(req, res);
+    expect(res.statusCode, 200);
+    expect(res.responseAsString,
+        '{"success":true,"message":"document created with id:424242"}');
+  });
+
+
 }

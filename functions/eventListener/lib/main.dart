@@ -14,12 +14,17 @@ import 'dart:convert' as convert;
   If an error is thrown, a response with code 500 will be returned.
 */
 
+ 
+Client? mockClient;
+Databases? mockDatabases;
+
 Future<void> start(final req, final res) async {
 //  print('req: ${req.variables}');
 
-  Client client = Client();
+  Client client = mockClient ?? Client();
 
-  Databases database = Databases(client);
+  Databases database = mockDatabases ?? Databases(client);
+
   bool resultCode = true;
   String message = 'OK';
 
@@ -40,11 +45,12 @@ Future<void> start(final req, final res) async {
           convert.json.encode(req.variables['APPWRITE_FUNCTION_EVENT_DATA']),
     };
     try {
-      await database.createDocument(
+      final document = await database.createDocument(
           databaseId: '634aefe8638b2f1f5404',
           collectionId: 'event_log',
           documentId: 'unique()',
           data: data);
+      message = 'document created with id:${document.$id}';
     } on Exception catch (e) {
       resultCode = false;
       message = e.toString();
