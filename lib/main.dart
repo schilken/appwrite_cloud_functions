@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _callRemoteFunction() async {
     try {
       final execution = await _functions.createExecution(
-          functionId: _functionId, data: "arg1:string-argument");
+          functionId: _functionId, data: '{"arg1":"arg1-value"');
       print('execution.status: ${execution.status}');
       print('execution.response: ${execution.response}');
     } on AppwriteException catch (e) {
@@ -68,24 +68,12 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const SizedBox(height: 10.0),
-            ElevatedButton(
-                child: Text(
-                  "Call Cloud Function",
-                  style: TextStyle(color: Colors.white, fontSize: 20.0),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.all(16),
-                  minimumSize: Size(280, 50),
-                ),
-                onPressed: () {
-                  _callRemoteFunction();
-                }),
-          ],
+        child: ElevatedButton(
+          onPressed: _callRemoteFunction,
+          child: const Text(
+            "Call Cloud Function",
+            style: TextStyle(color: Colors.white, fontSize: 20.0),
+          ),
         ),
       ),
     );
